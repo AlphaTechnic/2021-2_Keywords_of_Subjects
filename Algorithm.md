@@ -37,7 +37,7 @@
   - constraint
   - objective : cost를 최소화 혹은 최대화
 - 시간 복잡도가 같은 경우 -> overhead(constraint factor) 고려
-- 알고리즘 방법론
+- 다항시간 알고리즘을 찾을 수 없는 경우 사용하는 방법들
   - brute force method : instance가 작은 경우
   - efficient search algorithm
     - 백트래킹
@@ -47,7 +47,7 @@
 
 # 3강
 
-- 완전한 해결이 어려울 때 사용하는 방법들
+- 다항시간 알고리즘을 찾을 수 없는 경우 사용하는 방법들
   - 휴리스틱 알고리즘 (쓸만한 알고리즘)
     - 장점
       - 수행시간이 polynomial time이다
