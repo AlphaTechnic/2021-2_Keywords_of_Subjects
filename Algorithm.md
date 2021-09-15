@@ -84,15 +84,15 @@
 
 - T(n), W(n), B(n), A(n)
 - g(n) = O(f(n)) iff
-  - $\exist c, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $cf(n) \ge g(n)$
+  - $\exists c, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $cf(n) \ge g(n)$
     - ~이 O(n)임을 보여라. -> 적절한 $c, n_0$ 찾아주면 됨.
     - ~이 O(n)이 아님을 보여라. -> c는 positive value인데 어떻게 잡아도 안된다는걸 보여주면 됨
 - g(n) = $\Omega(f(n))$ iff
-  - $\exist c, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $g(n) \ge cf(n)$
+  - $\exists c, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $g(n) \ge cf(n)$
 - g(n) = $\Theta(f(n))$ iff
-  - $\exist c1, c2, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $c_1f(n) \le g(n) \le c_2f(n)$
+  - $\exists c1, c2, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $c_1f(n) \le g(n) \le c_2f(n)$
 - g(n) = o(f(n)) iff
-  - $\forall c, ~\exist n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $g(n) \ge cf(n)$ 
+  - $\forall c, ~\exists n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $g(n) \ge cf(n)$ 
   - 상한을 여유있게 잡아준 것
 - `theorem`
   - g(n) = o(f(n)) 이면, g(n) = O(f(n)) but g(n) != $\Omega(f(n))$
