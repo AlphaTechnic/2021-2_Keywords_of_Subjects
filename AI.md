@@ -59,10 +59,10 @@
 
 
 - Search의 Performance measure
-  - Completeness : solution이 존재한다면 무조건 찾느냐
-  - Optimality : 주는 solution이 optimal이냐
-  - 시간 복잡도
-  - 공간 복잡도
+  - `Completeness` : solution이 존재한다면 무조건 찾느냐
+  - `Optimality` : 주는 solution이 optimal이냐
+  - `시간 복잡도`
+  - `공간 복잡도`
 
 
 
