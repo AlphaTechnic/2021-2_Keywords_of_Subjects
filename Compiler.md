@@ -49,7 +49,9 @@
 
 2. Parging or Syntax anal (**구문 분석**)
 
-   - res = ![image-20210930130428469](./imgs_for_docs/image-20210930130428469.png)
+   - res = 
+
+     ![image-20210930130428469](./imgs_for_docs/image-20210930130428469.png)
 
 3. Semantic anal (**의미 분석**)
 
@@ -111,6 +113,31 @@
 - `Grammar`
   - G = ($V_n, V_T, P, S$)
   - 표기 : L(G)
+
+# 4강
+
+- Chomsky hierarchy
+  - type 0 : 제약 없
+    - 튜링머신이 생성할 수 있음
+  - type 1 : aA -> bb
+    - CSL(Context Sensitive Language) 
+    - linear bdd non-determinstic 튜링 머신이 생성할 수 있음
+  - type 2 : A -> aa
+    - LHS에 논터미널 달랑하나
+    - CFL(Context Free Grammar) 
+    - Non determinstic pushdown automata가 생성할 수 있음
+  - type 3 :
+    - A -> tB
+    - A -> t
+    - Finite State Automata가 생성할 수 있음
+
+- Notations for Grammar
+  1. Reg expr
+  2. Syntax Diagram
+  3. BNF
+  4. EBNF
+
+
 
 
 
