@@ -92,7 +92,7 @@
 - g(n) = $\Theta(f(n))$ iff
   - $\exists c1, c2, n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $c_1f(n) \le g(n) \le c_2f(n)$
 - g(n) = o(f(n)) iff
-  - $\forall c, ~\exists n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $g(n) \ge cf(n)$ 
+  - $\forall c, ~\exists n_0$ s.t $ n \ge n_0$ $\Rightarrow$ $cf(n)\ge g(n) $
   - 상한을 여유있게 잡아준 것
 - `theorem`
   - g(n) = o(f(n)) 이면, g(n) = O(f(n)) but g(n) != $\Omega(f(n))$
