@@ -21,7 +21,7 @@
    - `input` : sentence
    - `output` : '토큰'
 2. Parging or Syntax anal (**구문 분석**)
-   - `input` : 토근
+   - `input` : 토큰
    - `output` : (문법에 맞으면) 파스트리, 구문트리, (문법에 안 맞으면) err msg
      - 파스트리 : 토큰이 터미널 노드인 트리
 3. Semantic anal (**의미 분석**)
@@ -121,15 +121,15 @@
     - 튜링머신이 생성할 수 있음
   - type 1 : aA -> bb
     - CSL(Context Sensitive Language) 
-    - linear bdd non-determinstic 튜링 머신이 생성할 수 있음
+    - **linear bdd non-determinstic 튜링 머신**이 인식
   - type 2 : A -> aa
     - LHS에 논터미널 달랑하나
     - CFL(Context Free Grammar) 
-    - Non determinstic pushdown automata가 생성할 수 있음
+    - **Non determinstic pushdown automata**가 인식
   - type 3 :
     - A -> tB
     - A -> t
-    - Finite State Automata가 생성할 수 있음
+    - **Finite State Automata**가 인식
 
 - Notations for Grammar
   1. Reg expr
