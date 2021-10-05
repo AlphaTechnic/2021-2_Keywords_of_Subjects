@@ -229,7 +229,7 @@
 
 # 5강
 
-- Operations : Process Creation in Unix
+- Operations : Process **Creation** in Unix
   - `fork()`
 
   - `chd process`는 consists of **a cpy of the addr space** of the `par process`
@@ -240,18 +240,18 @@
 
     - 이를테면, main()에서 수행한 fork()는 code 공간에 main의 내용이 써져 있다가, `execlp("/bin/ls", "ls", NULL)`을 수행하면서 main의 내용을 지우고, ls의 내용을 적는다.
 
-      ![process creation](/Users/kimjuho/Downloads/fork.png)
+      ![process creation](./imgs_for_docs/fork.png)
 
       
 
-- Operations : Process Termination in Unix
+- Operations : Process **Termination** in Unix
 
   - `reparent` 정책을 쓰고 있음.
     - 부모 죽으면 자식 뭉탱이들 연쇄적으로 다 죽는 `cascading termination` 정책도 있긴함.
 
   
 
-- Zombie vs Orphan
+- `Zombie` vs `Orphan`
   - zombie
     - 자식 exit() 했는데, 부모가 wait(&status)로 자식의 종료를 받아주질 아니함
   - orphan
@@ -262,7 +262,7 @@
 - Address Space
   - process1과 process2가 각각 독립된 code, data, heap, stack의 4GB 공간을 갖는것처럼 생각해도 되게끔 함. (physical한 개념은 아니고, logical, virtual의 개념)
   - 그럼 실제 physical하게는 어떻게 관리되고 있느냐
-  - process에 사용되는 메모리공간이 page 단위로 잘개 쪼개져서 `frame` 형태로 `physical` 메모리에 올라가 있음.
+  - process에 사용되는 메모리공간이 `page` 단위로 잘개 쪼개져서 `frame` 형태로 `physical` 메모리에 올라가 있음.
     - => 실제 4GB가 없어도 됨.
 
 
