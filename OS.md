@@ -157,3 +157,117 @@
 
 
 
+# 4강
+
+- **Virtual Machine**
+
+  - 정의 : abstract hw that 여러 개의 기계를 돌리는 것처럼 illusion을 주는
+
+  - 이점
+
+    - 운영체제 복제도 가능
+    - (이를테면, 서버 컴퓨터) CPU Utilization을 극대화
+
+  - 환경의 종류
+
+    - Navive VM
+
+      - virtual machine monitor(VMM)를 bare machine 바로 위에 올림
+
+    - Hosted VM
+
+      - hw위에 -> host OS 위에 -> 올림
+
+        
+
+**end of ch2 : System Structure**
+
+**start of ch3 : Process**
+
+
+
+- Procss (= Job = Task)
+  -  정의
+    - `정의` : Program in execution
+    - `Program`은 Disk에 있는 binary file일 뿐
+  - 구성
+    - `stack` - local variables
+    - `heap` - dynamic allocation
+    - `data` - global var
+    - `code` - 어셈블리 명령어들
+
+
+
+- Process State
+  - `new`
+  - `ready` (new에서 메모리에 올라가면 = admitted)
+  - `running`
+  - `waiting`
+  - `terminated`
+
+- **PCB**(Process Control Block) - 프로세스 관리하는 자료구조
+  - process 의 context들(pid, state, program counter, mem limits, ..)이 저장되어 있다.
+
+
+
+- Process Scheduling
+  - `I/O bound process`
+  - `CPU bound process`
+  - I/O bound process를 잔뜩 MEM에 올려놓는 것은 CPU utilization을 극대화하는 방향이 아님
+- Scheduling Queues
+  - PCB1 - PCB2 - .. PCB10
+  - `Ready Queue` : 레디상태의 PCB들 줄줄이..
+  - `I/O Wait Queue` (= `Device Queue`) : wait 상태의 PCB들이 줄줄이..
+- **Scheduler**
+  - Queue의 Process들을 순서대로 돌려가면서 수행하는 기능 외에
+  - (프로세스를 위한 메모리 공간 모자라다면) Process를 골라서 외부(디스크)로 뱉어낼 수도 있다. (`swap out`)
+- Context Switch
+  - `Context` : PCB에 들어있는 프로세스와 관련된 정보
+  - 기본적으로 오버헤드임
+
+
+
+# 5강
+
+- Operations : Process Creation in Unix
+  - `fork()`
+
+  - `chd process`는 consists of **a cpy of the addr space** of the `par process`
+
+  - `exec()`
+
+    - chd의 code 공간을 싹 지우고, new program 실행
+
+    - 이를테면, main()에서 수행한 fork()는 code 공간에 main의 내용이 써져 있다가, `execlp("/bin/ls", "ls", NULL)`을 수행하면서 main의 내용을 지우고, ls의 내용을 적는다.
+
+      ![process creation](/Users/kimjuho/Downloads/fork.png)
+
+      
+
+- Operations : Process Termination in Unix
+
+  - `reparent` 정책을 쓰고 있음.
+    - 부모 죽으면 자식 뭉탱이들 연쇄적으로 다 죽는 `cascading termination` 정책도 있긴함.
+
+  
+
+- Zombie vs Orphan
+  - zombie
+    - 자식 exit() 했는데, 부모가 wait(&status)로 자식의 종료를 받아주질 아니함
+  - orphan
+    - 자식이 실행 중인데 부모가 먼저 죽어버림
+
+
+
+- Address Space
+  - process1과 process2가 각각 독립된 code, data, heap, stack의 4GB 공간을 갖는것처럼 생각해도 되게끔 함. (physical한 개념은 아니고, logical, virtual의 개념)
+  - 그럼 실제 physical하게는 어떻게 관리되고 있느냐
+  - process에 사용되는 메모리공간이 page 단위로 잘개 쪼개져서 `frame` 형태로 `physical` 메모리에 올라가 있음.
+    - => 실제 4GB가 없어도 됨.
+
+
+
+
+
+ 
+
