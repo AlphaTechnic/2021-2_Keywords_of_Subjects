@@ -267,6 +267,39 @@
 
 
 
+# 6강
+
+- Cooperating Process
+
+- **IPC**(Inter Process Communication)
+
+  - `방식1` : **msg passing**
+    - 3가지 이슈 : Naming, Synchronization, Buffering
+    - `Naming` : 
+      - direct 
+      - indirect : 중간에 mailbox를 두고 소통
+    - `Synchronization` : Blocking < - > Asynch, Non-blocking 
+    - `Buffering`
+      - zero cap : sender가 recv 올 때까지 기다려야 함. (랑데뷰)
+      - bdd cap :  buffer가 full인 경우 sender가 기다림
+  - `방식2` : **shared MEM**
+
+  
+
+  
+
+# 7강
+
+- IPC in Unix:
+  - 전통적인 IPCs : signal, pipe, socket
+  - System V IPCs : msg queue, semaphore, shared MEM
+
+
+
+- Pipe
+
+
+
 
 
  
