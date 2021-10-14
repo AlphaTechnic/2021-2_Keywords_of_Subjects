@@ -95,5 +95,82 @@
   - $Power_{dynamic}$ = (1 / 2) * Capacitive Load * $V^2$ * freq_switched
   - $Energy$ = CapacitiveLoad * $V^2$
   - V를 낮추는 방향(성능 감소)으로 Power를 낮추는것은 반드시 freq_switched도 낮추는 것을 유도한다.
+  - (중요한 기술) Dynamic  Voltage Freq Scaling
 - $P_{static}$
-  - 
+  - 아무것도 안하고 가만히 둬도 질질질 새면서 소모되는 Power (Leakage Current)
+  - $P_{static} = Current_{static}*V$
+  - (중요한 기술) Dynamic Power management
+- 앎달의 법칙
+  - common case를 빠르게 해야함
+
+
+
+여기서부터 chap 3. ISA, Datapath, and Pipeline
+
+- MIPS ISA
+  - R - format 
+    - Reg 3개 씀
+    - add \$1, \$2, \$3
+  - I - format
+    - lw, sw
+      - LW \$1, 100(\$2)
+    - Beq
+      - beq \$1, \$2, 100
+        - \$1이랑 \$2 비교 해서 PC + 100 * 4 + 4로 점프
+
+- Hazards
+
+  - `Structural Hazards`
+    - 하드웨어 메모리가 하나뿐이어서 instruction fetch랑 mem access랑 동시에 겹쳐버리는 문제
+    - inst 메모리와 data 메모리를 분리하면 그만
+  - `Data Hazards`
+
+  - `Control Hazards`
+
+    - 무릇 branch란
+
+      1. 브랜치 할 지 말 지 (Branch outcome resolution)
+      2. 어떤 addr로 브랜치 할 지 (Branch Target Addr resolution)
+
+      이 2가지를 결정해야 함
+
+
+
+# 5강
+
+- `Data Hazards`
+
+  - `RAW` - true dependency
+
+  - `WAR` - anti dependency
+
+  - `WAW` - output dependency
+
+    => RAW 는 어떻게든 forwarding, 그래도 bubble 생기면 rescheduling
+
+    => 아래 2개는 inst 순서 바꿔서 reschedule을 하면 문제가 될 수 있음.
+
+- `Control Hazards`
+
+  해결1. 가만냅두자
+
+  해결2. Prediction (branch 안 일어날 것으로 가정)
+
+  해결3. Prediction (branch 일어나는 것으로 가정)
+
+  해결4. Delay slot : `"무적권 수행할 명령어"`를 위치시킬 수 있는 공간 (젤 됴호음)
+
+   - 이 전 명령 중 독립적인거 가져옴.
+
+   - branch target 땡겨옴.
+
+   - branch 안 일어날거라 생각하고 다음 명령 땡겨옴.
+
+     해결3과 해결4의 차이 : 해결3은 정책하나를 정하는거고 해결4는 컴파일러가 보고 잘 선택을 하는 거인듯
+
+
+
+
+
+
+
