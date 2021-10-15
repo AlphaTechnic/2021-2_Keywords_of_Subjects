@@ -222,6 +222,44 @@ Static Branch Prediction에서 제일 뭐 노력해봐야 `Trace(profile)-based 
 
 # 8강
 
+- Dynamic Branch Prediction
+  - PC 값의 하위 x개의 비트를 보고 table로 달려가서 히스토리를 기록 (x는 column의 세로 사이즈)
+    - 관성이 전혀 없는 1bit BHT
+    - 관성 한 번 주는 2bit BHT
+    - Correlated Branch Prediction : (m, n비트) BHT - 브랜치 m개를 바라보고 히스토리를 기록. column이 2^m개가 됨 (브랜치 상태의 경우의 수가 2^m 개)
+      - 2bit BHT는 사실상 (0, 2) predictor였던 셈
+
+
+
+# 9강
+
+- `Local History branch predictor`
+  - 8강에서 `Global history branch predictor`(`correlated branch predictor`)가 여러 개의 branch 경우의 수($2^m$ 가지)를 고려 한다면, 이 `local history branch predictor`는 하나의 branch의 히스토리를 보고 미래를 예측하는 얘기
+
+
+
+여기서부터는 어디로 점프할지 branch target address를 예측하는 영역
+
+- `BTB` (`Branch Target Buffers`)
+  - 구성:
+    - Branch Instruction Address
+    - Branch History
+    - Branch Target
+- `RAS` (`Return Address Stack`)
+
+
+
+- **업뎃!**
+  - JAL 같은 명령은 RAS에도 PC+4 업뎃 놓고, BTB에도 Tar Addr 업뎃 놓고
+  - BEQ, J 같은 명령은 BTB에만 업뎃 놓고
+- **사용! (Prediction)**
+  - JR 같은 명령은 RAS에서 꺼내 사용할테고
+  - JAL, BEQ, J 는 BTB에서 보고 Tar Addr 예측
+
+
+
+
+
 
 
 
