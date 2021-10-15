@@ -166,7 +166,61 @@
 
    - branch 안 일어날거라 생각하고 다음 명령 땡겨옴.
 
-     해결3과 해결4의 차이 : 해결3은 정책하나를 정하는거고 해결4는 컴파일러가 보고 잘 선택을 하는 거인듯
+     해결3과 해결4의 차이 : 해결3은 정책하나를 정하는거고 해결4는 컴파일러가 보고 적절한 거를 잘 선택해서 가져오는 것인듯
+
+
+
+# 6강
+
+- Instruction Level Parallelism
+  - 좀 더 발전해서 요새는 dynamic approach를 시도 
+  - <-> static approach :  컴파일러가 프로그램 run 전에 여러가지를 판단
+- Loop Level Parallelism
+  - dynamic via branch prediction
+  - static via loop unrolling by compiler
+
+
+
+# 7강
+
+```c
+for (i = 1000; i > 0; i = i - 1){
+  	x[i] = x[i] + s;
+}
+```
+
+를 무지성으로 complie하면, 하나의 loop에 stall이 5개나 생김.
+
+
+
+- 먼저, `loop overhead`를 개선해볼 수 있음. -> Branch hazard의 빈도수를 줄여버림
+  - `Loop unrolling` 조져벌힘
+  - 필연적으로 `register renaming`을 수반함
+  - 4배 펼치면, loop overhead가 1/4배로 줄어듦
+
+  
+
+- (코드의 종속성을 잘 판단해야겠지만, 할 수만 있다면) `rescheduling` 까지 조져벌힘 -> `Control Hazard`까지 제거할 수 있음
+  - iteration당 9 사이클을 3.5 사이클까지 줄여벌임 ㄷ
+
+
+
+- 3가지 한계
+  - 욕심부려서 더 펼치면 좋아지기야 하겠지만은 개선 효과가 점점 떨어짐
+  - 코드 사이즈가 커짐
+  - 레지스터 모자르게 됨 (Register Pressure)
+
+
+
+이제 chap 4b. Instruction Level Parallelism 2
+
+Static Branch Prediction에서 제일 뭐 노력해봐야 `Trace(profile)-based branch prediction`.
+
+특정 주소에 있는 branch가 take를 많이 하더라 이런 통계를 갖고 prediction 하는거.
+
+
+
+# 8강
 
 
 
