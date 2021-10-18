@@ -234,3 +234,305 @@ SLL* dequeSLL(SLL** Q, SLL* Q_end){
 }
 ```
 
+
+
+
+
+# 6강
+
+> `classSLL.h`
+
+```cpp
+typedef struct _SLL{
+  int i;
+  struct _SLL *p;
+}SLL;
+
+class SLList{
+  private:
+  	static SLL* SLL_pool;
+  	static unsigned long SLL_cnt;
+  	static unsigned long UsedMemoryForSLLs;
+  public:
+  	SLL* allocSLL(void);
+  	void freeSLL(SLL* p);
+  	void freeSLL_pool(void);
+};
+```
+
+> `classSLL.cpp`
+
+```cpp
+SLL* SLList::SLL_pool;
+unsigned long SLList::SLL_cnt;
+unsigned long SLList::UsedMemoryForSLLs;
+
+SLL* SLList::allocSLL(void){
+  // c와 동일
+}
+void freeSLL(SLL* p){
+  // c와 동일
+}
+void freeSLL_pool(void){
+  // c와 동일
+}
+```
+
+
+
+> `Stack.h`
+
+```cpp
+class sllStack:public SLList{
+  private:
+  	SLL* ST;  // header
+  public:
+  	sllStack(void){  // 생성자
+      ST = NULL;
+    }
+  	~sllStack(void){ // 소멸자
+     while(!empty()){
+       SLL *p = pop();
+       freeSLL(p);
+     } 
+    }
+  
+  void push(SLL *p);
+  SLL *pop(void);
+  bool empty(void);
+  SLL* top(void);
+}
+```
+
+
+
+> `Stack.cpp`
+
+```cpp
+void sllStack::push(SLL *p){ // header 불필요
+  //
+}
+
+void sllStack::pop(void){ // header 불필요
+  //
+}
+
+void sllStack::empty(void){ // header 불필요
+  //
+}
+
+```
+
+
+
+> `Queue.h`
+
+```cpp
+class sllQueue:public SLList{
+  private:
+  	SLL *Q, *Q_end;
+  public:
+  	sllQueue(void){ // 생성자
+      Q = Q_end = NULL;
+    }
+  	~sllQueue(void){
+      while(!empty()){ // 소멸자
+        SLL *p = deque();
+        freeSLL(p);
+      }
+    }
+  	
+  	void enque(SLL *p);
+  	SLL* deque(void);
+  	bool empty(void);
+  	SLL* top(void);
+}
+```
+
+> `Queue.cpp`
+
+```cpp
+void sllQueue::enque(SLL *p){
+  //
+}
+
+SLL* sllQueue::deque(void){
+  //
+}
+
+bool sllQueue::empty(void){
+  //
+}
+
+```
+
+
+
+
+
+이제 Graph Implementation
+
+- adjacent matrix
+- adjacent list
+- Using Linked List
+
+```cpp
+typedef struct _SLL{
+  int i;
+  struct _SLL *p
+}SLL;
+
+// vertex
+typedef struct _vertex{
+  SLL *p;
+}
+
+// edge
+typedef struct _edge{
+  int cost;
+  int vf, vr;
+}
+```
+
+
+
+
+
+# 7강
+
+- Graph Implementation using Array
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 8강
+
+> BFS
+
+```python
+def bfs(s):
+  que = deque(s)
+  vis = [False for _ in range(V + 1)]
+  vis[s] = True
+  while que:
+    cur = que.popleft()
+    # 여기에 vertex cost 관련 처리
+    for nxt in graph[cur]:
+      if vis[nxt]: continue
+      
+      # 여기에 edge cost 관련 처리 (cur ~ nxt)
+      que.append(nxt)
+      vis[nxt] = True
+```
+
+
+
+> DFS
+
+```python
+def dfs(cur):
+  vis[cur] = True;
+  # 여기에 vertex cost 관련 처리
+  for nxt in graph[cur]:
+    if vis[nxt]: continue
+    # 여기에 edgecost 관련 처리 (cur ~ nxt)  
+      
+    dfs(nxt) 
+```
+
+
+
+- Euler Cycle
+  - **자료구조**를 어떻게 설계하느냐에 따라, 효율적인 **알고리즘**으로 가느냐 마느냐가 될 수 있다.
+  - **자료구조의 알고리즘으로의 영향력**
+
+> `DBL structure`
+
+```cpp
+typedef struct _DBL{
+  int d;
+  struct _DBL *twin;  // 다른 위치에 있는 나 자신을 가리키는 pointer
+  struct _DBL *lp, *rp;
+}
+```
+
+> Class for DBL pool
+
+```cpp 
+class DBList {
+  private:
+  	DBL *DBL_pool;
+  public:
+  	unsigned long DBL_cnt;
+  	unsigned long UsedMemoryForDBLs;
+  	DBList(void) {
+      DBL_pool = NULL;
+      DBL_cnt = 0;
+      UsedMemoryForDBLs = 0;
+    }
+  	~DBList(void){
+    }
+  
+  	DBL *allocDBL(void);
+  	void freeDBL(DBL *p);
+  	void freeDBL_pool(void);
+}
+```
+
+> 함수 1. `DBL *DBList::allocDBL(void)`
+
+```cpp
+DBL *DBList::allocDBL(void){
+  DBL *p;
+  if (DBL_pool == NULL){
+    (System MEM에서 가져옴)
+  }
+  UsedMemoryForDBLs += sizeof(DBL);
+  p->d = NONE;
+  else {
+    (DBL_pool에서 하나 뺌)
+  }
+  
+  p -> rp = p -> lp = p -> twin = NULL;
+  ++DBL_cnt;
+  return p;
+}
+
+```
+
+> 함수 2. `void DBList::freeDBL(DBL *p)`
+
+```cpp
+void DBList::freeDBL(DBL *p){
+  if (p -> d == NONE) (왜 이미 free인걸 또다시 free하려하는가) return;
+  
+  p -> d = NONE;
+  p -> rp = DBL_pool;
+  DBL_pool = p;
+  --DBL_cnt;
+}
+```
+
+> 함수 3. `void DBList::freeDBL_pool(void)`
+
+```cpp
+void DBList::freeDBL_pool(void){
+  DBL *p = DBL_pool;
+  while (p != NULL) {
+    (pool 쭈욱 돌면서 free)
+  }
+  if (DBL_cnt) != 0 {(먼가 잘못됨!)}
+}
+```
+
+
+
