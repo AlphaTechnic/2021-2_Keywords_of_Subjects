@@ -96,6 +96,141 @@
   - 상한을 여유있게 잡아준 것
 - `theorem`
   - g(n) = o(f(n)) 이면, g(n) = O(f(n)) but g(n) != $\Omega(f(n))$
+  - 역은 성립 안 함. (g(n) = 짝이면 n 홀이면 1 이런식으로 하면)
 
 
+
+# 5강
+
+- 알아두면 유용한 complexity 관련 사실
+  - g(n) = O(f(n)) $\Leftrightarrow$ f(n) = $\Omega(n)$
+  - g(n) = $\Theta(n)$ $\Leftrightarrow$ f(n) = $\Theta(g(n))$
+  - $log_2n = log_3n$
+  - $2^n << 3^n <<n!$
+  - g(n) = O(f(n)), h(n) = $\Theta(f(n))$ => g(n), h(n)의 lin combi = $\Theta(f(n))$
+
+
+
+- Decision Problem (결정문제)
+  - `NP` : non-deterministic 알고리즘으로 polynomial time에 chk되는 문제
+  - `P` : polynomial time에 해결되는 문제
+  - `NPC` : polynomial time에 해결될지 말지를 모르는 문제
+
+
+
+- Dynamic Allocation
+  - 정리 : https://alphatechnic.tistory.com/35
+
+
+
+- Singly Linked List
+
+  - Storage Pool을 이용한 SLL 메모리 관리
+
+    
+
+    | application | <- allocSLL() | storage pool                    | -> malloc() | Sytem |
+    | ----------- | ------------- | ------------------------------- | ----------- | ----- |
+    | program     | -> freeSLL()  | 미사용 SLL을 linked list로 보관 | <- free()   | MEM   |
+
+
+
+- C codes for Storage Pool
+
+``` c
+// global 변수
+SLL* SLL_pool = NULL; // 이게 head
+unsigned long SLL_cnt = 0;
+unsigned long UsedMemoryForSll = 0;
+```
+
+- 함수 1. `SLL *allocSLL(void)`
+
+```c
+SLL *allocSLL(void){
+  SLL* p;
+  
+  if (pool 비었으면) {
+    malloc으로 받아옴
+  } 
+ 	else{
+    pool에서 원소하나 뺌
+  }
+  p -> p = NULL;
+  ++SLL_cnt;
+  return p;
+}
+```
+
+- 함수 2. `void freeSLL(SLL *p)`
+
+```c
+void freeSLL(SLL *p){
+  if (p -> i == NULL) 너 왜 이미 free한거를 또 free할라고 그러냐? return;
+    
+  p -> i == NONE;
+  원소로 받은 p를 pool에 집어넣음
+  --SLL_cnt;
+}
+```
+
+- 함수 3. `void freeSLL_pool(void)`
+
+```c
+void freeSLL_pool(void){
+  SLL* p = SLL_pool;
+  p로 pool 쭈욱 순회하면서, free 조져벌힘.
+    
+  if (SLL_cnt != 0 ) 오류
+}
+```
+
+
+
+- 스택 구현
+
+- 함수 1. `void pushSLL(SLL **ST, SLL *p)`
+
+```c
+void pushSLL(SLL **ST, SLL *p){
+  p -> p = *ST;
+  *ST = p;
+}
+```
+
+- 함수 2. `SLL* SLL popSLL(SLL** ST)`
+
+```c
+SLL* SLL popSLL(SLL** ST){
+  SLL *p = *ST;
+    
+  if (size == 1) {}
+  else {}
+  return p;
+}
+```
+
+
+
+- Queue 구현
+
+- 함수 1. `void enqueueSLL(SLL **Q, SLL **Q_end, SLL* p)`
+
+```c
+void enqueueSLL(SLL **Q, SLL **Q_end, SLL* p){
+  if (size == 0){}
+  else {꼬리에 넣음}
+}
+```
+
+- 함수 2. `SLL* dequeSLL(SLL** Q, SLL* Q_end)`
+
+```c
+SLL* dequeSLL(SLL** Q, SLL* Q_end){
+  SLL *p = *Q;
+  
+  if (size == 1){}
+  else {}
+}
+```
 
