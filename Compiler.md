@@ -251,3 +251,55 @@
 
 
 
+
+
+# 10강
+
+- single production rule 제거
+  - single로 가는거 지우고 그 자리에 그 single을 타고 들어가서 만나게 되는 애들을 낑가 넣으면 됨
+- left-factoring (좌인수분해)
+  - Backtracking문제가 해결이 됨. (2줄로 분리됨)
+- elimination fo left-recursion
+  - immediate left recursion
+    - A -> AB | T
+      - T뒤에 BBBB.. 쭈욱 달리게 되는 형태임을 인지하면 다음과 같이 2줄로 쪼개면서 left recursion 없앨 수 있음
+      - A -> TA'
+      - A' -> BA' | $\epsilon$
+  - indirect left recursion
+    - S를 A쪽으로 대입하면, A에 대한 immediate left recursion 맹글어짐.
+
+
+
+// 새로운 챕터
+
+- Pushdown Automata
+  - 스택 개념을 추가해서 개수를 체크할 수 있다.
+  - Formal Def
+    - M = (Q, $\Sigma$, **T**, $\delta$, $q_0$, **z0**, F)
+      - T : stack
+      - z0 : stack의 시작 symbol
+      - $\delta$
+        - $\delta$ : Q X ($\Sigma \cup \epsilon$) X T -> $Q$X$T^{*}$
+        - $\delta(q, a, z) = $ {(p, r)}
+        - z를 pop, r을 push
+        - $\delta^{*}$ (extended transition function of PDA)
+
+
+
+# 11강
+
+- Top-down parsing
+  - 실패시 다른 생성규칙을 적용하기 위해 Backtracking을 하니, 비효율적일 수밖에 없음
+  - Backtracking 없는 `Deterministic parsing`을 하고싶음.
+  - 그러기 위해서는 LL 조건을 만족해야함.
+  - `LL` = Left to right scanning + Leftmost derivation
+
+
+
+- FIRST, FOLLOW
+  - `FIRST(A)` : nonterminal A로 부터 유도되는 맨 왼쪽 terminal 기호
+  - Nullable nonterminal 
+    - $\epsilon$ 을 유도할 수 있는 nonterminal
+
+
+
