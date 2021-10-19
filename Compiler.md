@@ -139,5 +139,115 @@
 
 
 
+# 5강
+
+- Finite Automata
+  - NFA
+  - DFA
+- FA : 상태가 유한 개
+  - Formal Def 
+    - M = (Q, $\Sigma$, $\delta$, $q_0$, F)
+    - Q, $\Sigma$ 는 set이고, $q_0$는 원소 하나, F도 set
+    - $\delta$를 제시할 때, table로 하면 좋은듯.
+  - in NFA
+    - $\delta$ : Q X ($\Sigma \cup \epsilon$) -> $2^Q$
+- $\epsilon$ - closure(q)
+  - q에서 꽁으로 갈 수 있는 state set
+
+
+
+# 6강
+
+- NFA to DFA
+
+  - 뭉텅이를 하나의 state로 만들어 주는 것에 불과
+
+- State minimization
+
+  - distinguishable은 냅두고, indistinguishable을 합치는 거
+  - equivalence set을 계속 쪼갬
+
+- 3위 일체
+
+  - RG => RE 
+    - X = $\alpha$X + $\beta$의 해는 $\alpha^*\beta$ 인 사실 이용
+  - RE => FA
+    - 1대1로 매칭되는 그림 암기
+    - N1 + N2, N1N2, $N1^{*}$
+  - FA => RG
+    - 간단한 규칙
+      - Q = $V_N$
+      - $\Sigma$ = $V_T$
+      - q0 = S
+      - P :
+        - $\delta(q, a) = r$ -------> Q->aR
+        - q $\in$ F --------------> Q -> $\epsilon$
+
+  
+
+# 7강
+
+- **Lexical Analysis (Scanning) - 어휘 분석기**
+
+  - Lexical Analyzer (Scanner)
+
+  - 개념
+
+    | 소스 프로그램 | -> Scanner -> | token stream | -> 구문 분석기 -> |
+    | ------------- | ------------- | ------------ | ----------------- |
+    |               | (└-> 바라봄)  | symbol table | (<-┘바라봄)       |
+
+- token
+
+  - 개념 : 터미널 기호로 구성된 문법적으로 의미있는 최소단위
+  - `Pattern`, `Lexeme`, `token` 용어 구분
+    - \<id\> ::= \<letter\> 어쩌고
+    - ni, tot, ..
+    - id, const, op, de
+  - 표현 : 튜플 표현이 일반적
+    - (token #, token value)
+  - 최종 목표는 FA(오토마타) 얻는 것
+
+![compile4_2000](./imgs_for_docs/compile4_2000.png)
+
+
+
+# 8강
+
+- Context Free Grammar
+  - 왼쪽에 nonterminal 딱 하나 나오는 grammar
+  - derive < - > reduce
+- Parse Tree
+  - derivation 과정을 tree 형태로 표현
+  - leftmost derivation과 rightmost derivation
+- Ambiguous Grammar
+  - 하나의 문장이 서로 다른 두 개의 parse tree로 표현될 수 있는 문법 G
+  - **해결 1. Grammar 자체를 unambiguous로 변화시키기**
+  - **해결 2. 충돌이 발생한 Scanner에서 충돌을 없애버리기**
+
+
+
+- 해결 1을 수행하는 구체적인 방법은 Grammar에
+  - **연산자 우선순위를 적용** and (3 + 4 * 5) 
+    - 우선 순위 높은 derivation을 아래에 적음
+  - **left(right) associative를 적용** (3 - 4 - 5)
+    - cur -> cur * nxt 이런식으로 적음
+
+
+
+# 9강
+
+- Grammar Conversion
+  - elimination
+    - useless production rule 제거
+      - `terminating nonterminal` (terminal을 생성해주는 nonterminal은 지워선 안되는 소중한 존재)
+      - `accecible symbol` (시작 state로부터 접근이 되는 nonterminal도 지워선 안되는 소중한 존재)
+      - 위의 2개를 순서대로 지켜내고 남은 useless들 삭제
+      - 순서를 반드시 지켜줘야함
+    - epsilon pruduction rule 제거
+      - $\epsilon$ 제거 하면서 보상 룰 추가
+    - single production rule 제거
+      - (다음시간에)
+
 
 
