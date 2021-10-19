@@ -454,6 +454,8 @@ def dfs(cur):
 - Euler Cycle
   - **자료구조**를 어떻게 설계하느냐에 따라, 효율적인 **알고리즘**으로 가느냐 마느냐가 될 수 있다.
   - **자료구조의 알고리즘으로의 영향력**
+  - Euler Cycle :  모든 vertex deg가 짝수
+  - Euler path : 모든 vertex deg가 짝수, 단 2개의 vertex deg는 홀수
 
 > `DBL structure`
 
@@ -465,7 +467,7 @@ typedef struct _DBL{
 }
 ```
 
-> Class for DBL pool
+> `Class for DBL pool`
 
 ```cpp 
 class DBList {
@@ -535,4 +537,300 @@ void DBList::freeDBL_pool(void){
 ```
 
 
+
+# 9강
+
+> `class dblStack` (graph의 ajfacent list 구성에 사용)
+
+```cpp
+class sblStack {
+  private:
+  	DBL *ST;
+  public:
+  	dblStack(void){
+      ST = NULL;
+    }
+  	~dblStack(void) {
+    }
+  
+  	void push(DBL *p);
+  	DBL* pop(void);
+  	void remove(DBL *p);
+  	DBL *top(void);
+  	void empty(void);
+}
+```
+
+> `void dblStack::remove(DBL *p)`
+
+```cpp
+void dblStack::remove(DBL *p){
+  if (p == ST){ // p가 헤드에 있으면,
+    (제거)
+  }
+  else{ // 헤드가 아니라 다른 데 있으면,
+    (제거)
+  }
+}
+```
+
+
+
+- 자료구조 구성을 완료했으니 -> 이제 구현 (O(E)에 가능해짐)
+
+```cpp
+typedef struct _Vertex{
+  dblStack S;  // adj list contains edge index
+  int degree;
+}Vertex;
+
+typedef struct _Edge{
+  int v1, v2;
+}Edge;
+```
+
+
+
+- Pseudo code (dfs와 상당히 흡사함)
+
+```cpp
+빈 stack stk와 크기가 V + 1인 배열 path를 준비;
+S.push(start);
+while (S != empty){
+  cur = S.pop();
+  if (deg(v) == 0){
+    v를 path에 추가하고, stk에서 pop; 
+  }
+  else{
+    for nxt in graph[cur]{
+      1. e 삭제
+      2. stk.push(nxt)
+    }
+  }
+}
+```
+
+
+
+
+
+// 이제 Divide and Conquer로 진입.
+
+// 이 알고리즘의 시간복잡도를 얻어내기 위해, 점화식 -> 일반항 바꾸는 법을 알 필요가 있다.
+
+
+
+- Homogeneous Linear Recurrence Equation
+  - 특성방정식(Characteristic eq) 이용
+  - change of variable
+  - substitution method
+
+- Master method
+  - 대충 T(n) = `a`T(n / b)일 때, `a`가 작냐 크냐에 영향을 많이 받음.
+
+
+
+# 10강
+
+> `mergesort()`
+
+```c
+void mergesort(int n, keytype S[]){
+  if (n == 1) return;
+
+  h = n / 2;
+  m = n - h;
+  U[1, .., n];
+  V[1, .., n];
+  cpy(S) to U, V 절반씩;
+  
+  mergesort(h, U);
+  mergesort(h, V);
+  mergesort(h, m, U, V, S);
+}
+```
+
+=> function call 흐름이 dfs()랑 비슷할 수 밖에 없음. 다만 끝까지 간 뒤 merge() 작업 하나 추가된 셈
+
+
+
+> `merge()`
+
+```c
+void merge(h, m, const keytype U[], const keytype V[], const keytype S[]){
+  idx i = j = k = 1;
+  while (i <= h && j <= m) { // i, j는 둘 중 하나만 증가, k는 항상 증가
+    if (U[i] <= V[j]) { // 등호를 박아야 Stable을 유지할 수 있음
+      S[k++] = U[i++];
+    }
+    else {
+      S[k++] = V[j++];
+    }
+  }
+  
+  if (j <= m){ // j가 끝까지 가지 몬함
+    cpy(V[j ~ m]) to S[k ~ (h + m)];
+  }
+  else{ // i가 끝까지 가지 못함
+    cpy(U[i ~ h]) to S[k ~ (h + m)];
+  }
+}
+```
+
+=> 이 알고리즘은 추가적인 메모리로 S[] 외에 2n을 더 요구하게 됨. 이걸 n으로 줄일 수 있음
+
+
+
+> `merge2()`
+
+```c
+void merge2(idx low, ldx mid, idx high){ // S는 글로벌로 있음
+  idx i, j, k;
+  keytype tmp[low,..high];
+  i = low;
+  j = mid + 1;
+  k = low;
+  
+  while (i <= mid && j <= high){ // S를 tmp에 박음 (merge1()이랑은 반대)
+    if (S[i] <= S[j]){
+      tmp[k++] = S[i++];
+    }
+    else {
+      tmp[k++] = S[j++];
+    }
+  }
+  
+  if (j <= high){ // j가 끝까지 못감
+    cpy(S[j ~ high] to tmp[k ~ high];
+  }
+  else{
+    cpy(S[i ~ mid]) to tmp[k ~ high];
+  }
+  cpy(tmp[low ~ high]) to S[low ~ high];
+}
+```
+
+=> 어쨌건 n의 extra memory가 필요하기 때문에 **in-place sorting 알고리즘**이 아니다.
+
+=> mergesort()는 등호를 박아줌으로써, **stable**(key값이 같은 경우 순서가 유지되는)을 유지할 수 있다.
+
+
+
+- quicksort()
+
+```c
+void quicksort(idx low, idx high){
+  if (low >= high) return;
+  
+  idx piv_point
+  partition(low, high, piv_point);
+  quicksort(low, piv_point - 1);
+  quicksort(piv_point + 1, high);
+}
+```
+
+> `partition`
+
+```c
+void partition(idx low, idx high, idx& piv_point){
+  idx i;
+  idx j = low; // j는 piv_itm보다 작은 놈들 모임의 오른쪽 끝을 가리키고 있기 위한 용도
+  keytype piv_itm = S[low];
+  
+  for (i = low + 1; i <= high; i++){
+    if (S[i] < piv_itm){ // 왼쪽으로 땡겨올 itm 발견..!
+      j++;
+      xchg(S[i], S[j] // S[i]를 왼쪽으로 땡겨온다는 의미가 강하다.
+    }
+  }
+  
+  // 마무리
+  piv_point = j;
+  xchg(S[low], S[piv_point]);
+}
+```
+
+
+
+- **Remark**
+  - Time Complexity
+    - worst case : $\Theta(n^2)$
+    - average case : $\Theta(nlogn)$
+    - but 이름처럼 줫네 빠르다고 알려짐
+  - Space complexity
+    - In-place algorithm (swap 때문에 (O(1)의 여분 하나 필요하긴 한듯?))
+  - Stability
+    - not stable
+    - stable을 유지하고 싶으면 추가 메모리가 필요함
+  - 순수한 quicksort()는 최악의 경우 depth를 n만큼 타고 들어갈 수 있어서 stackoverflow 위험 있음
+
+
+
+- 행렬곱셈 (Strassen's 알고리즘)
+  - 7개의 곱을 미리 계산하고, 분할정복을 적용한다.
+  - 8개의 곱셈에서 곱셈을 딱 하나 줄였고, 덧셈이 무지 늘어났음에도 불구하고, $O(n^3)$따리를 $(O(n^{2.81}))$ 정도까지 줄여놓을 수 있음
+
+
+
+- Large number에 대한 곱셈에 분할정복 적용
+  - 분할 정복을 적용하기 위해 large number를
+  - $x * 10^{n/2} + y$ 같은 느낌으로 봐주면, 4번의 곱셈을 3번까지로 줄일 수가 있다.
+
+
+
+# 11강
+
+- Large number 곱셈 분할정복 algorithm
+
+```c
+large_int prod(large_num u, large_num v){
+  large_int x, y, w, z, r, p, q;
+  int n, m;
+  
+  n = max(len(u), len(v));
+ 	if (u == 0 || v == 0) return 0;
+  else if (n <= threshold) return u * v; // threshold는 실험적으로 결정
+  else{
+    m = n / 2;
+    x = u / 10^m; // 이 연산은 그저 shift라 시간 복잡도에 영향 없음
+    y = u % 10^m; // 여기도 마찬가지
+    r = prod(x + y, w + z);
+    p = prod(x, w);
+    q = prod(y, z);
+  }
+  return p * 10^{2m} + (r - p - q)*10^m + q;
+}
+```
+
+- W(n) = 3W(n / 2) + cn (cn은 곱셈)
+- O(n^2)이던 large number multiplication이 O(n^{1.58})까지 됨^^
+
+
+
+- Closest Pair Problem (최근접 점의 쌍 문제)
+
+```python
+def closestPair(S, k):
+  # 입력 S : n개 점들의 집합
+  
+  S.sort(key=lambda x: x[0])  # x좌표 오름차순 정렬
+  if n <= k:
+    return (k개의 점에서 closest pair)
+  
+  S를 같은 크기의 Sl과 Sr로 분할
+  dl = closestPair(Sl, k)
+  dr = closestPair(Sr, k)
+  dlr = min(dl, dr)
+  dlr에 의해 구성된 중간 영역에서의 closest pair dc 찾음
+  
+  return min(dlr, dc)
+  
+```
+
+- 시간 복잡도
+
+  - T(n) = 2*T(n / 2) + f(n)
+  - f(n)이 cn^2이면, 이건 O(n^2)
+
+  
 
