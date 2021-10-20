@@ -300,6 +300,40 @@
   - `FIRST(A)` : nonterminal A로 부터 유도되는 맨 왼쪽 terminal 기호
   - Nullable nonterminal 
     - $\epsilon$ 을 유도할 수 있는 nonterminal
+  - FIRST($Y_1Y_2..Y_k$) = FIRST($Y_1$) $\bigoplus$ FIRST($Y_2$) $\bigoplus$ .. $\bigoplus$ FIRST($Y_k$)
+
+
+
+# 12강
+
+- Backtracking 없는 Deterministic Parsing을 원한다.
+  - $A$ -> $\alpha ~|~ \beta$ 라고 했을 때, next symbol을 deterministic하게 고르기 위해서는 FIRST($\alpha$) $\cup$ FIRST($\beta$) 를 보면 될 일이다.
+  - 그런데 FIRST($\alpha$)가 $\epsilon$을 포함해버린다면??
+  - 그 때는, FOLLOW(A)를 보면서 골라줘야된다.
+
+- FOLLOW(A)
+  - nonterminal B의 바로 뒤에 오는 첫번째 terminal들의 집합
+
+
+
+- **LL(1) condition** : $A$ -> $\alpha ~|~ \beta$ 라고 했을 때,
+  1. FIRST($\alpha$), FIRST($\beta$)가 서로소
+  2. 만약, $\epsilon \in$ FIRST($\alpha$)라면?? => FOLLOW(A)와 FIRST($\beta$)가 서로소
+
+
+
+- LL(1) condition을 이용한 Parser
+  - `Recursive-descent parser`
+    - 구현이 쉽고 간단
+    - 문법을 hard coding하는 것에 불과.
+    - 문법을 수정하면, 프로시져를 직접 수정
+  - `Predictive Parsing`
+    - 각 nonterminal들에 대해 FIRST와 FOLLOW를 잘 구해놓으면, 그걸로 parsing table을 만들어 줄 수 있다.
+    - 그 parsing table을 보고, (**+ stack을 이용해**) 입력받은 string을 인식할 수 있다.
+
+
+
+
 
 
 
