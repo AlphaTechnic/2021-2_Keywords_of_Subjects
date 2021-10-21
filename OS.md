@@ -280,8 +280,8 @@
       - indirect : 중간에 mailbox를 두고 소통
     - `Synchronization` : Blocking < - > Asynch, Non-blocking 
     - `Buffering`
-      - zero cap : sender가 recv 올 때까지 기다려야 함. (랑데뷰)
-      - bdd cap :  buffer가 full인 경우 sender가 기다림
+      - zero capacity : sender가 recv 올 때까지 기다려야 함. (**랑데뷰**)
+      - bdd capacity :  buffer가 full인 경우 sender가 기다림
   - `방식2` : **shared MEM**
 
   
@@ -626,7 +626,7 @@
 
 
 
-- 안전한 CS 수행을 위한 노력1. **Software-based approaches**
+- **안전한 CS 수행을 위한 노력1. software-based approaches**
 
   > general structure of Pi
 
@@ -644,7 +644,7 @@
     ```c
     do {
       while (turn != i);
-      	CS
+      CS
       turn = j;
       RS
     } while(1);
@@ -660,7 +660,7 @@
     do {
       flag[i] = true;
       while (flag[j]);
-      	CS
+      CS
       flag[i] = false;
       RS
     } while(1);
@@ -674,7 +674,7 @@
     do {
       flag[i] = true; turn = j;
       while (flag[j] && turn == j);
-      	CS
+      CS
       flag[i] = false;
       RS
     } while(1);
@@ -687,5 +687,136 @@
 
 # 12강
 
+- **안전한 CS 수행을 위한 노력2. HW instruction으로 synchronization**
 
+  1. disable interrupts -> 오버헤드 너무 큼
+
+  2. atomic instruction 제공
+
+     > `boolean TestAndSet(boolean *target)`
+
+     ```c
+     boolean TestAndSet(boolean *target) {
+       boolean rv = *target;
+       *target = TRUE;
+       return rv;
+     }
+     
+     // lock을 걸고(TRUE) CS에 진입하는 것에 불과
+     // bdd waiting을 만족하지 못함. 특정한 P만 계속 도는게 가능
+     do {
+       while (TestAndSet(&lock));
+       CS
+       lock = FALSE;
+       RS
+     } while(TRUE);
+     ```
+
+     
+
+     > `void Swap(boolean *a, boolean *b)`
+
+     ```c
+     void Swap(boolean *a, boolean *b) {
+       boolean temp = *a;
+       *a = *b;
+       *b = temp;
+     }
+     
+     // 역시 lock을 걸고(TRUE) CS에 진입하는 것에 불과
+     // 역시 bdd waiting을 만족하지 못함. 특정한 P만 계속 도는거 가능
+     do {
+       while (key == TRUE) Swap(&lock, &key));
+       CS
+       lock = FALSE;
+       RS
+     } while(TRUE);
+     ```
+
+     
+
+- **안전한 CS 수행을 위한 노력3. Semaphore**
+
+  - Semaphore : integer 변수임 s.t 오직 P와 V로만 접근할 수 있는
+
+    ```c
+    void wait(S) { // P(S)
+      while (S <= 0) do no-op;
+      
+      S--;
+    }
+    
+    void signal(S) { // V(S)
+      S++;
+    }
+    ```
+
+  - Counting semaphore(S >= 0) vs Binary Semaphore(=mutex lock) (S == 0 or S == 1)
+
+  - Spinlock(=busy waiting)이 이로울 때가 있는데, 세마포는 busy waiting 안함
+
+  - Using semaphore
+
+    ```c
+    // 역시 bdd waiting은 만족하지 않고 있다.
+    semaphore mutex;
+    
+    do {
+      wait(mutex); // wait은 하나 내리는거
+      CS
+      signal(mutex); // signal은 하나 올리는거
+      RS
+    } while(1);
+    ```
+
+  - Deadlock이나 Starvation의 위험성 있음
+
+
+
+- **안전한 CS 수행을 위한 노력4. Monitor**
+
+  - monitor 안에서 수행하는 함수는 오직 하나임을 개런티 해줌
+
+  - `condition variable`
+
+    - condition을 만족하지 못해서 함수 수행을 하지 못하고 기다려야 한다면, x varialbe에 링크드리스트처럼 대기시켜놓음
+
+    - `x.wait()` `x.signal()`
+
+    - **세마포와 다른 점??**
+
+      - x.signal()은 단 하나의 suspended process만 깨움
+      - suspended process가 없다면, x.signal() 아무런 effect 없음
+
+      
+
+    - 그런데, x.signal() 하는 순간 suspended된 process가 동작하면서 monitor에 2가지 process가 돌게 됨.
+
+    - 이걸 해결하는 정책
+
+      - signal and wait method (Hoare's semantic)
+
+        - signal을 주고 깨운 다음에 본인은 나가서 wait
+        - 지금 signal을 주게 된게, 지금 하필 이 시점에 이 condition이 만족이 된건데, 바로 수행을 시켜줘야하지 않겠느냐는 입장
+
+      - signal and continue method (Brinch Hansen's semantic)
+
+        - signal을 주고 깨운 다음에 본인 수행을 이어 continue하고, 그 다음 대기타던 놈 수행
+
+        - 위에 저놈은 context switching이 너무 많이 일어나는거 아니냐
+
+        - 대신 위와같은 문제는 
+
+          ```c
+           // if (!condition) x.wait()  <-버려:
+          while (!condition) x.wait()
+          ```
+
+          와 같은 방식으로 condition rechecking을 통해 해결함.
+
+        - Pthread가 위와같은 방식
+
+
+
+# 13강
 
