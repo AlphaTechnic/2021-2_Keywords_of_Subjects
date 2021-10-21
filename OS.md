@@ -820,3 +820,133 @@
 
 # 13강
 
+- Classical Problem of synchronization
+
+  - bdd Buffer Problem
+
+    ```c
+    semaphore full = 0;
+    semaphore empty = n;
+    semaphore mutex = 1;
+    
+    // Producer Process
+    do {
+      produce an item in nextp
+        
+      wait(empty);
+      wait(mutex);
+      
+      add nextp to buffer
+        
+      signal(mutex);
+      signal(full);
+    } while(1);
+    
+    
+    // Consumer Process
+    do {
+      wait(full);
+      wait(mutex);
+      
+    	remove an item from buffer
+        
+      signal(mutex);
+      signal(empty);
+      
+      consume the item in nextc
+    } while(1);
+    ```
+
+    
+
+  - Readers-Writers Problem
+
+    ```c
+    semaphore mutex = 1;
+    semaphore wrt = 1;
+    int readcount = 0;
+    
+    // 1st readers-writers : reader 친화적. reader는 기다리지 말아라
+    // Writer Process
+    do {
+      wait(wrt);
+      
+      writing is performed
+        
+      signal(wrt);
+    } while(1);
+    
+    
+    // Reader Process
+    do {
+      wait(mutex);
+      readcount++;
+      if (readcount == 1) wait(wrt);
+      signal(mutex);
+      
+     	reading is performed
+      
+      wait(mutex);
+      readcount--;
+      if (readcount == 0) signal(wrt);
+      signal(mutex);
+    } while(1);
+    ```
+
+    
+
+  - Dining-Philosophers using Semaphore
+
+    ```c
+    Philosopher i;
+    do {
+      wait(chopstick[i]);
+      wait(chopstick[(i + 1) % 5]);
+      
+      eat;
+      
+      signal(chopstick[i]);
+      signal(chopstick[(i + 1) % 5]);
+      
+      think;
+    } while(1);
+    ```
+
+    위 코드는 데드락 가능성이 있음. 전부 오른쪽 젓가락 집으려고 하면..
+
+    적당히 정책을 쓴다해도, starvation이 생길 수 있음
+
+    
+
+  - Dining-Philosophers using Monitor
+
+    ```c
+    monitor dp{
+      enum {thinking, hungry, eating} state[5];
+     	condition self[5];
+      
+      void pickup(int i){
+        state[i] = hungry;
+        test(i);
+        if (state[i] != eating) self[i].wait();
+      }
+      void putdown(int i){
+        state[i] = thinking;
+        test((i + 4) % 5);  // test left neighbor
+        test((i + 1) % 5);  // test right neighbor
+      }
+      void test(int i){
+        if ((state[(i + 4) % 5] != eating) && (state[i] == hungry) && state[(i + 1) % 5] != eating)) {
+          state[i] = eating;
+          self[i].signal();
+        }
+      }
+      void init(){
+        for (int i = 0; i < 5; i++)
+          state[i] = thinking;
+      }
+      
+    }
+    ```
+
+    
