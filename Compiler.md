@@ -229,9 +229,10 @@
 
 - 해결 1을 수행하는 구체적인 방법은 Grammar에
   - **연산자 우선순위를 적용** and (3 + 4 * 5) 
+    - nonterminal 하나 더 두면서,
     - 우선 순위 높은 derivation을 아래에 적음
   - **left(right) associative를 적용** (3 - 4 - 5)
-    - cur -> cur * nxt 이런식으로 적음
+    - **cur** -> **cur** * nxt 이런식으로 적음
 
 
 
@@ -257,6 +258,7 @@
 
 - single production rule 제거
   - single로 가는거 지우고 그 자리에 그 single을 타고 들어가서 만나게 되는 애들을 낑가 넣으면 됨
+  - single 제거한다고, line이 줄어들지는 않음
 - left-factoring (좌인수분해)
   - Backtracking문제가 해결이 됨. (2줄로 분리됨)
 - elimination fo left-recursion
