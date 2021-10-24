@@ -74,3 +74,83 @@
 
 
 
+# 5강
+
+- 독립
+  - event가 독립 $\Leftrightarrow$ P(A$\cap$B) = P(A)P(B)
+  - 확률변수(함수)가 독립 $\Leftrightarrow$ $f(x, y) = f_X(x)f_Y(y)$
+  - E(aX+bY) = aE(X) + bE(Y) always
+    - E(XY) = E(X)E(Y) if X, Y are independent
+
+- Covariance, Correlation coefficient
+  - Cov(X, Y) = E$((X - u_x)(Y - u_y))$
+  - $\rho(X, Y) = \rho_{XY} = \frac {Cov(X, Y)} {\sqrt{Var(X)}\sqrt{Var(Y)}}$
+
+
+
+- g(X, Y)의 pdf를 구하는 방법?
+  1. cdf로 pdf 구하기
+  2. diff, monotone인 상황에서 -> 미분(공식)
+  3. 변수를 늘리는 방법
+
+
+
+# 6강
+
+- `Limit Theorem`
+  - `Chebyshev's thm`
+  - 
+    - $P(|X - u_X| < k \sigma) \ge 1 - \frac 1 {k^2}$
+  - `Weak Law of large numbers`
+    - $\bar X \rightarrow \mu$ (확률적으로) as n -> $\infty$
+  - `Strong Law of large numbers`
+    - $\bar X \rightarrow \mu$  as n -> $\infty$
+  - `Central limit thm`
+    - $Z_n = \frac {\bar X - \mu} {\frac {\sigma} {\sqrt n}}$ -> N(0, 1) as n -> $\infty$
+
+
+
+- Sampling Distributions
+  - T(통계량) : function of observed random variables s.t unknown parameter가 없다
+  - $\bar X = \frac {X_1 + .. +X_n} {n}$
+  - $s^2 = \frac {1} {n - 1} \Sigma (X_i - \bar X)^2$
+  - `Thm`
+    - n이 1이건 2이건 상관 없이 $E(\bar X) = \mu$, $Var(\bar X) = \frac {\sigma ^2} {n}$
+
+
+
+# 7강
+
+(생략)
+
+
+
+# 8강
+
+- `Def` $\chi ^2 - distrib$ 
+  - $X$ ~ $f(x) = \frac {1} {\beta ^ \alpha \Gamma(\alpha)} x^{\alpha - 1} exp(- \frac {x} {\beta})$ (x > 0)
+    - E(X) = $\alpha \beta$
+    - V(X) = $\alpha \beta ^2$
+    - $M_x(t) = (1 - \beta t)^{-\alpha}$, $t < \frac 1 \beta$
+
+- `Thm`
+  - $X_1$ ~ $\chi^2(n _1)$, $X_2$ ~ $\chi^2(n _2)$ $\Rightarrow$ $\Sigma X_k$ ~ $\chi^2(n _1 + n_2)$
+- `Thm`
+  - $X$ ~ $N(0, 1)$ $\Rightarrow$ $X^2$ ~ $\chi^2(1)$
+- `Thm`
+  - $\Sigma Z^2$ ~ $\chi^2(n)$
+- `Thm`
+  - $\Sigma \frac {(X_i - \bar X)^2}{\sigma ^2} = \frac {(n-1)s^2}{\sigma ^2}$ ~ $\chi^2(n-1)$
+- Student t - distrib (sample size 작들 때, 정규분포 대용으로)
+  - T $\equiv$ $\frac {\bar X - \mu} {\frac {s} {\sqrt n}}$ ~ T(n - 1)
+
+
+
+# 9강
+
+- F - distrib => 2개의 population이 서로 다른 경우에 사용 (남자grp과 여자grp 라든가)
+- U ~ $\chi^2(n _1)$, V ~ $\chi^2(n _2)$ => F $\equiv$ $\frac {\frac {U} {n_1}} {\frac {V} {n_2}}$ ~ F($n_1, n_2$)
+- F $\equiv$ $\frac {\sigma_2 ^2 s_1^2} {\sigma_1^2 s_2 ^2}$ ~ F($n_1 - 1, n_2 -1$)
+
+
+
