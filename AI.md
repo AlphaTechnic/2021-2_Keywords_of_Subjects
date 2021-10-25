@@ -153,3 +153,54 @@
       
       ```
 
+
+
+# 5강
+
+- Admissible
+  - heuristic이 admissible <=> never overestimates [goal까지 가는 비용]
+  - `Thm`
+    - h(n)이 addmissible => A* using TREE-SEARCH is optimal
+  - `tree search` vs `graph search`
+    - graph search는 repeated state를 버림
+- Consistency 
+  - heuristic이 consistent <=> h(n) $\le$ c(n, a, n') + h(n')
+  - `Thm`
+    - h(n)이 consistent => A* using GRAPH-SEARCH is optimal
+  - `Thm`
+    - consistent => admissible
+
+
+
+- A* 특성
+  - A* expands all nodes with f(n) < C*(optimal path cost)
+  - A* expands some nodes with f(n) = C*
+  - A* expands no nodes with f(n) > C*
+- 평가
+  - completeness? Yes
+  - optimal? Yes
+  - Time complexity O($b^d$)
+  - Space complexity O($b^d$)
+    - Space complexity가 줜네 비싸다보니, 이거시 major problem이 된다.
+
+
+
+- Weighted A* search
+  - Faseter, but optimal 보장 못함
+- Memory-bdd heuristic search
+  - "reached"(vis)에서 앞으로 안쓰게 될 거 메모리에서 지움
+  - Beam Search 에서 branch factor 제한
+  - Iterative deepening A* (IDA*)
+  - (Simplified) Memory-bdd A* ((S)MA*)
+    - local에서 너무 쓰레기인거는 버림
+  - `RBFS` (Recursive-best-first-search)
+    - optimal if h(n) is admissible
+    - Space complexity : O(bd)
+
+
+
+- problem의 relaxed version의 exact solution 을 휴리스틱으로 할 수도
+- problem의 subproblem의 solution 을 휴리스틱으로 할 수도
+
+
+
