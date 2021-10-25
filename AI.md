@@ -236,3 +236,17 @@
 
 
 
+
+
+# 7강
+
+- Adversarial Search
+  - MinMax
+  - AlphaBeta
+  - MCTS(Monte Carlo Tree Search)
+    - evaluation function 구하는 데 비용이 크다면? => simulation 해서 승 / 패 통계를 다 구해보림
+
+
+
+# 8강
+
