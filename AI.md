@@ -204,3 +204,35 @@
 
 
 
+# 6강
+
+- (Greedy) Local Search
+  - suitable for optimization problems
+  - 장점
+    - 메모리 적게 씀
+    - 답 빨리 찾음
+  - 단점
+    - local minimum에 빠질 수 있음
+
+
+
+- Hill climbing search
+  - Stochastic HC
+    - 랜덤하게 선택
+  - First-choice HC
+    - 좋아지는 거 첫 발견시 무지성 선택
+  - Random-restart HC
+    - 스타트를 랜덤하게 해 줌
+
+
+
+- Simulated anealing
+  - local maximum을 빠져나오기 위해 일부러 bad move를 하용
+  - but gradually decrease their freq
+- Local Beam Search
+  - brach factor를 k개 정도로 제한
+- Genetic algorithm
+  - 적자 생존, 돌연 변이 같은 요소를 알고리즘에 도입
+
+
+
