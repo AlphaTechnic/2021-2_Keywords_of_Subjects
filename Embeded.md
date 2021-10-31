@@ -13,13 +13,13 @@
       - SRAM
     - non-volatile (power 꺼도 data 남아있음)
   - `stroage` : 이따금씩
-  - `peripheral device` : 필요에 따라
+  - `peripheral device` : 필요에 따라 (under the necessity)
 
 
 
 # 2강
 
-- MEM
+- `MEM`
   - volatile
     - DRAM
       - capacity에 포커스를 두고 설계
@@ -95,7 +95,7 @@
   - $Power_{dynamic}$ = (1 / 2) * Capacitive Load * $V^2$ * freq_switched
   - $Energy$ = CapacitiveLoad * $V^2$
   - V를 낮추는 방향(성능 감소)으로 Power를 낮추는것은 반드시 freq_switched도 낮추는 것을 유도한다.
-  - (중요한 기술) Dynamic  Voltage Freq Scaling
+  - (중요한 기술) Dynamic Voltage Freq Scaling
 - $P_{static}$
   - 아무것도 안하고 가만히 둬도 질질질 새면서 소모되는 Power (Leakage Current)
   - $P_{static} = Current_{static}*V$
@@ -124,6 +124,7 @@
     - 하드웨어 메모리가 하나뿐이어서 instruction fetch랑 mem access랑 동시에 겹쳐버리는 문제
     - inst 메모리와 data 메모리를 분리하면 그만
   - `Data Hazards`
+    - RAW hazard
 
   - `Control Hazards`
 
@@ -172,7 +173,7 @@
 
 # 6강
 
-- Instruction Level Parallelism
+- Instruction Level Parallelism (ILP)
   - 좀 더 발전해서 요새는 dynamic approach를 시도 
   - <-> static approach :  컴파일러가 프로그램 run 전에 여러가지를 판단
 - Loop Level Parallelism
