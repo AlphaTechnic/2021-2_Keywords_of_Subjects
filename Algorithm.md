@@ -740,7 +740,7 @@ void partition(idx low, idx high, idx& piv_point){
   for (i = low + 1; i <= high; i++){
     if (S[i] < piv_itm){ // 왼쪽으로 땡겨올 itm 발견..!
       j++;
-      xchg(S[i], S[j] // S[i]를 왼쪽으로 땡겨온다는 의미가 강하다.
+      xchg(S[i], S[j]) // S[i]를 왼쪽으로 땡겨온다는 의미가 강하다.
     }
   }
   
@@ -802,8 +802,8 @@ large_int prod(large_num u, large_num v){
 }
 ```
 
-- W(n) = 3W(n / 2) + cn (cn은 곱셈)
-- O(n^2)이던 large number multiplication이 O(n^{1.58})까지 됨^^
+- $W(n) = 3W(n / 2) + cn$ (cn은 곱셈)
+- $O(n^2)$이던 large number multiplication이 $O(n^{1.58})$까지 됨^^
 
 
 
@@ -829,8 +829,514 @@ def closestPair(S, k):
 
 - 시간 복잡도
 
-  - T(n) = 2*T(n / 2) + f(n)
-  - f(n)이 cn^2이면, 이건 O(n^2)
+  - $T(n) = 2*T(n / 2) + f(n)$
+  - f(n)이 $cn^2$이면, 이건 $O(n^2)$
 
   
+
+# 12강
+
+## dp
+
+- dp
+
+  - 작은 사이즈 instance의 optimal solution을 table에 저장해서 이걸 바탕으로 큰 사이즈의 instance에 대한 solution을 얻는 것
+
+- Shortest Path Problem
+
+  - 종류
+
+    - single to single
+
+    - single source all destination shortest path problem (다익스트라)
+      - s_node에서 다른 모든 vertex들 까지의 shortest path
+      - 다익스트라
+        - greedy approach
+        - negative cost edge 있으면 안됨.
+        - Shortest path spanning tree 얻을 수 있음
+    - All pairs shortest path problem (플로이드 와샬)
+      - dp approach
+      - negative cost edge에도 잘 작동
+      - 문논, 음의 cycle 있으면 안됨.
+
+  - 문제 유형
+    - **step 1. shortest path 길이 구하기**
+    - **step 2. 실제 path 구하기 (back tracing 이용)**
+
+
+
+- **플로이드 와샬**
+
+  - Notation
+
+    - $D_k(i, k) \coloneqq$ i ~ j path길이 s.t only 인덱스 k 이하의 노드만 이용
+    - $D_k(i, k) \coloneqq W(i,j)$ (cost edge)
+
+  - Pseudo code
+
+    ```cpp
+    void floyd (int n, const number W[][], number D[][]) {
+      D = W; // 초기화
+      for (k = 1; k <= n; k++) { // 인덱스 하나씩 추가하면서
+        for (i = 1; i <= n; i++) { // 모든 vertex 쌍에 대하여
+          for (j = 1; j <= n; j++) {
+            D[i][j] = min(D[i][j], D[i][k] + D[k][j]);
+          }
+        }
+      }
+    }
+    ```
+
+  - Time Complexity
+
+    - $\Theta(n^3) = O(n^3)$
+
+  - **실제 path 구하기**
+
+    ```cpp
+    D = W; // 초기화
+    for (k = 1; k <= n; k++) { // 인덱스 하나씩 추가하면서
+      for (i = 1; i <= n; i++) { // 모든 vertex 쌍에 대하여
+        for (j = 1; j <= n; j++) {
+          if (D[i][k] != MAX && D[k][j] != MAX) {
+            if (D[i][k] + D[k][j] < D[i][j]) {
+            D[i][j] = D[i][k] + D[k][j];
+            P[i][j] = k; // k를 반드시 지난다.
+          }
+          }
+        }
+      }
+    }
+    ```
+
+    ```c
+    void path (int s, int e) {
+      if (P[s][e] != 0) {
+        path(s, P[s][e]);
+        print(P[s][e]);
+        path(P[s][e], e);
+      }
+    }
+    ```
+
+  
+
+# 13강
+
+- **Principle of Optimality**
+
+  - sub instance의 optimal solution은 전체 instance의 optimal solution에 무적권 포함되어있다는 개념 (역은 not true)
+  - 그니까 이 principle of optimality를 만족하는 것을 증명할 때는 아래와 같은 방법을 따른다.
+    - 가정 : 큰 instance가 optimal인데, 작은 instance가 optimal이 아니라고 해보자
+    - 결론 : 그러면 큰 instance가 optimal이라는 데에 모순!
+
+- **Chained Matrix Multiplication**
+
+  - principle of optimality 만족? =? Yes
+
+  - 이걸 divide and conquer로 한다면?
+
+    ```cpp
+    int CMdc(i, j) {
+      if (i == j) return 0;
+      else if (i == j - 1) return (# of muls for AiAj);
+      else {
+        ans = MAX;
+        for (k = i + 1; k = i + j - 1; k++) {
+          ans = min(CMdc(i, k) + CMdc(k + 1, j) + m_i(k+1)j)
+        }
+      }
+    }
+    ```
+
+    => exponential time complexity
+
+  - Def
+
+    - Dimension of $A_k$ = $d_{k-1}d_k$ for $k=1, 2, .., n$
+    - $M[i][j]$= min num of mult needed to multiply $A_i$~$ A_j$ 단, $i < j$
+    - $M[i][i] = 0$
+
+  - Recursive Property
+
+    - $M[i][j] = \min_{i \le k \le j-1} M[i][k] + M[k + 1][j] + ddd$
+    - $M[i][j] = 0$ for $1 \le i \le j \le n$
+
+  - Pseudo Code
+
+    ```cpp
+    int minmult(int n, const int d[], index P[][]) {
+      index i, j, k, diagonal;
+      int M[1..n][1..n];
+      
+      for (i = 1; i <= n; i++) {  // 초기화
+        M[i][i] = 0;
+      }
+      for (diagonal = 1; diagonal <= n - 1 ; diogonal++) {
+        for (i = 1; i <= n; i++) {
+          j = i + diagonal;
+        	M[i][j] = min_{i <= k <= j - 1} (M[i][k] + M[k + 1][j] + d[i - 1]*d[k]*d[j]);
+        	P[i][j] = a value of that give the minimum;
+        }
+      }
+    	return M[1][n];
+    ```
+
+    
+
+  - **실제 Path 구하기**
+
+    ```cpp
+    void order (index i, index j) {
+      if (i == j) {
+        cout << "Ai" << i;
+        return;
+      }
+      
+      k = P[i][j];
+      cout << "(";
+      order(i, k);
+      order(k + 1, j);
+      cout << ")";
+    }
+    ```
+
+  - Time complexity
+
+    - $\Theta(n^3) = O(n^3)$
+
+    
+
+    
+
+    
+
+- **Optimal Binary Search Tree**
+  - **Static Data**를 관리하는 자료구조에 대해 생각
+    - 초기에 자료구조 설정해 놓고, 
+    - 이후에는 only **search** operation
+  - Search 빈도가 높은 key를 낮은 레벨(루트 쪽)에 배정해 두는 것이 Average Search Time을 줄인다.
+
+
+
+# 14강
+
+- **Optimal Binary Search Tree** (이어서)
+
+  - Notation
+
+    - $A[i][j]$ : **avg search time** for a binary search tree s.t $KEY_i, KEY_{i+1}, .. KEY_{j}$
+    - edge case
+      - $A[i]A[i-1] = 0$
+      - $A[i][i] = p_i$
+    - $A[i][j] = min_{i \le k \le j}(A[i][k-1]+A[k+1][j] + \Sigma_{m=i}^{j}p_m)$ 
+
+  - Pseudo Code
+
+    ```cpp
+    void optserachtree (int n, const float p[], float& minavg, index R[][]) {
+      index i, j, k, diagonal;
+      float A[1..n + 1][0..n];
+      
+      for (i = 1; i <= n; i++) {
+        A[i][i - 1] = 0;
+        A[i][i] = p[i];
+        R[i][i] = i;
+        R[i][i - 1] = 0;
+      }
+      
+      for (diagonal = 1; diagonal <= n - 1; diagonal++) {
+        for (i = 1; i <= n - diagonal; i++) {
+          j = i + diagonal;
+          A[i][j] = min_{i <= k <= j} (A[i][k - 1] + A[k + 1][j]) + p_{i~j}
+          R[i][j] = a value of 'k' that gave the minimum;
+        }
+      }
+      minavg = A[1][n];
+    ```
+
+  - Time complexity
+
+    - $\Theta(n^3) = O(n^3)$
+
+  - **실제 BST 구하기**
+
+    ```cpp
+    node_pointer tree (intex i, j) {
+      index k;
+      node_pointer p;
+      
+      k = R[i][j];
+      if (k == 0) {
+        return NULL;
+      }
+      
+      else {
+        p = new nodetype;
+        p -> key = Key[k];
+        p -> left = tree(i, k - 1);
+        p -> right = tree(k + 1, j);
+        return p;
+      }
+    }
+    ```
+
+    => Time complexity $T(n) = \Theta(n)$
+
+  
+
+  
+
+- **Traveling Salesperson Problem (TSP)**
+
+  - 개념
+    - 다른 vertex 한번씩만 찍고 다시 돌아오는 cycle (Hmiltonian cycle)
+    - NP-hard 문제
+  - Notation
+    - $V = \{v1, v2, .., v_n\}$
+    - $W[i][j] \coloneqq$ edge cost
+    - $D[v_i][A] \coloneqq$ vi에서 v1으로 돌아오는 path 길이 s.t 모든 vertex가 A에 있고, 딱 한번씩만 지남
+  - Recursive Property
+    - $D[v_i][A] = min_{j:v_j \in A} (W[i][j] + D[v_j][A - \{v_j\}])$ if $A \neq \empty$
+    - $D[v_i][\empty] = W[i][1]$
+    - Length of Optimal Tour
+      - $D[v_i][V - \{ v_1\}] = min_{2 \le j \le n} (W[i][j] + D[v_j][A - \{v_1, v_j\}])$
+
+  - Pseudo Code
+
+    ```cpp
+    number D[1..n][subset of V - {v1}];
+    
+    // init
+    for (int i = 2; i <= n; i++) {
+      D[i][empty_set] = W[i][1];
+    }
+    
+    for (k = 1; k <= n - 2; k++) {  // subset size
+      for (all subsets of V - {v1} containing k vertices called A) {
+        for (i s.t i != 1 and vi is not in A) {
+          D[i][A] = min_{vj in A} (W[i][j] + D[j][A - {vj}];
+    			P[i][A] = value of j that gave the minimum;
+        }
+      }
+    }
+    D[1][V - {v1}] = min_{2 <= j <= n} (W[1][j] + D[j][A - {v1, vj}];
+    P[1][V - {v1}] = value of j that gave the minimum;
+    minlength = D[1][V - {v1}];
+    ```
+
+    - Time Complexity
+      - $\Theta(n^22^n)$
+    - Space Complexity (size of D[] and P[])
+      - $M(n) = 2n2^{n-1} = \Theta(n2^n)$
+    - **실제 Path 구하기**
+      - 가능
+
+
+
+# 15강
+
+- **냅색**
+  - 개념
+    - fractional 냅색 => 가성비 기준 greedy로 조지면, optimal 얻음
+    - 0/1 냅색 => dp
+  - Principle Optimality
+    - $x_1 = a_1, .., x_n = a_n$이 optimal solution이라고 가정
+    - if $a_n$ = 0
+      - $a_1, .., a_{n-1}$이 optimal일 수밖에 없음. (capacity $W$ 내에서)
+    - elif $a_n$ = 1
+      - $a_1, .., a_{n-1}$이 optimal일 수밖에 없음. (capacity $W - w_n$ 내에서)
+  - Recursive Property
+    - $P[i][w] = max(P[i - 1][j], P[i-1][w-w_i] +p_i)$ 에 불과 (단, $w_i \le w$)
+    - $P[n][W]$ is the maximum profit
+  - 시간복잡도
+    - $\Theta(nW)$
+
+
+
+- **Edit Dsitance**
+  - 3개의  operation
+    - 삽입
+    - 삭제
+    - 대체 (substitute)
+  - **편집거리 (edit distance)**
+    - **S를 T로 변환시키는 데 필요한 최소의 편집 operation 연산 횟수**
+  - Notation
+    - $E[i, j] \coloneqq$ $S[:i]$를 $T[:j]$로 변환 시키는 데 필요한 최소 edit distance
+  - Recursive Property
+    - $E[i, j] = min(E[i - 1, j] + 1, E[i, j - 1] + 1, E[i, j] + \alpha)$
+  - **Back Tracing**
+    - 3군데에서 어디에서 왔는가를 다시 계산해서 거꾸로 올라가면 됨
+
+
+
+# 16강
+
+- **MIND(Maximum Independent Set) in Tree (boj 2533: 사회망 서비스)**
+
+  - 개념
+
+    - 일반적인  graph라면, 이 문제는  NP-hard지만 Instance에 제한을 가하면, polynomial이 될 수 있음
+    - graph를 tree구조에서만 생각한다면, polynomial time 알고리즘으로 해결 가능
+
+  - Pseudo Code
+
+    ```cpp
+    // dfs 기반
+    if (v is a leaf) {
+      D1(v) = 1 and D0(v) = 0
+    }
+    
+    else {
+      let chd1, chd2, .. , chdk be the children of v then,
+      D1(v) = 1 + sum(D0(chdi), i = 1, 2, .., k);
+      D0(v) = sum(max(D0(chdi), D1(chdi)), i = 1, 2, .., k);
+    }
+    ```
+
+  - **실제  MIND 구하기**
+
+    - binary tree라면,
+      - preorder로!
+        - 자신을 결정하고, children의 포함 여부를 결정
+    - 일반  tree라면,
+      - BFS!
+
+    
+
+  - 시간 복잡도
+    - $\Theta(|V|)$ - linear time
+
+  
+
+  
+
+- DAG (Directed Acyclic Graphs)에서  
+
+  - AOV (Activity on Vertex) 
+    - => topological ordering 알고리즘
+  - **AOE (Activity on Edge)**
+    - 개념
+      - Time to complete the task 
+        - => the cost of longest path (called **critical path**)
+        - => minimum time to finish the project
+      - 인스턴스를 DAG로 제한해서 longest path의 길이를 구하면, 이건 dp로 polynomial time에 가능함. (제한 안하면 NP-hard)
+    - Notations
+      - Variables on edge
+        - early(i) : the earliest time for activity i may start
+        - late(i) : the latest time that the activity may start without increasing the project duration
+        - **early(i) <= activity i의 가능한 시작 시간 <= late(i)**
+      - Variables on each vertices
+        - $earliest[k]$ : the earliest time that event k can occur
+        - $latest[k]$ : the latest time that event k may occur without increasing the project duration
+    - Recursive Property
+      - $k => activity~ i => l$ 인 상황에서
+      - $early(i) = earliest[k]$
+      - $late(i) = latest[l] - duration~of <k, l>$
+      - Computing $earliest[l]$ by **forward topological searching**
+        - 맨 처음 $earliest[0] = 0$으로 줌
+        - $earliest[l]=max_{k \in P(l)}(earliest[k] + duration ~of <k, l>)$
+      - Computing $latest[l]$ by **backward topological searching**
+        - 맨 뒤에 dummy 도착 vertex를 만들어서 $latest[n + 1] = DURATION$ 줌
+        - $earliest[k]=min_{l \in S(k)}(earliest[k] + duration ~of <k, l>)$
+    - Remarks
+      - task가 성공적으로 끝나려면, $d \ge earliest(n + 1)$
+        - $earliest(n + 1)$ : 전체 일을 마칠 수 있는 최소시간
+      - If $early(i) = late(i)$, we call the activity $critical$
+      - $slack(i) \coloneqq late(i) - early(i)$ (느슨한 정도)
+      - If a path from source to desination has edges with **zero skew**, the path is called a ***critical path***
+    - 
+
+
+
+## Greedy
+
+-  거스름돈 문제
+  - 동전의 단위에 따라서, greedy가 먹히지 않을 수도 있음
+  - => 그런 경우 dp로 해야함
+
+- MST
+  - Spanning Tree
+    - T = (V, E') (E'은 E의 부분집합)
+    - **Minimum Spanning Tree = edge cost sum이 제일 작은 spanning tree**
+  - Steiner Tree
+    - S가 주어짐
+      - 주어지는 S가 S = V라면, Spanning Tree인 셈
+    - T = (V', E' ) (V'은 S를 cover 해야함, E'는 E의 부분집합)
+    - **Minimum Steiner Tree = edge cost sum이 제일 작은 steiner tree**
+
+- 프림
+
+  - Pseudo Code
+
+    ```python
+    # init
+    F = set()
+    Y = {v1}
+    
+    while (the instance is not solved) {
+      select a vertex in V - Y that is nearest to Y  # 여기를 잘 만들어야 함
+      add vertex to Y;
+      add the edge to F;
+      if (Y == V) {
+        the instance is solved;
+      }
+    }
+    ```
+
+    ```cpp
+    void prim(int n, const number W[][], set_of_edges& F) {
+      index i;
+      index vnear;
+      index nearest[2..n];
+      number min;
+      number distance[2..n];
+      edge e;
+      
+      F = empty_set();
+      for (i = 2; i <= n; i++) {
+        nearest[i] = 1;
+        distance[i] = W[1][i];
+      }
+      
+      repeat (n - 1 times) {
+        min = INF;
+        for (i = 2; i <= n; i++) {
+          if (0 <= distance[i] < min) {
+            min = distance[i];
+          	vnear = i;
+          }
+        }
+       	c = edge connecting vnear~nearest[vnear];
+        add c to F;
+        distance[vnear] = -1;
+        for (i = 2; i <= n; i++) {
+          if 
+        }
+        
+        
+        
+      }
+    }
+    ```
+
+    
+
+    
+
+- 크루스칼
+
+- 다익스트라
+
+- 
+
+
+
+
+
+
+
+
+
+
 
