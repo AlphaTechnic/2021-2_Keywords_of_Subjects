@@ -259,6 +259,23 @@ Static Branch Prediction에서 제일 뭐 노력해봐야 `Trace(profile)-based 
 
 
 
+# 10강
+
+- 하드웨어가 해주는 Dynamic scheduling
+  - compile time에 알 수 없는 dependency도 많음
+  - exec cycle이 1 cycle이 아니게 됨.
+  - dynamic schedule이 static schedule보다 유리함
+- out-of-order execution => out-of-order completion
+- in-order issue, `register renaming`(WAR, WAW data hazard 피함)
+
+
+
+# 11강
+
+
+
+
+
 
 
 
