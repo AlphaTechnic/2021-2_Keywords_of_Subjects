@@ -487,7 +487,7 @@ docker run -d -p 9999:80 --name apacheweb2 httpd
 docker run -v [호스트_PC의_절대경로]:[도커_컨테이너_절대경로] httpd
 
 # 다른 옵션과 함께 사용한 예 (호스트 PC 경로에 한글이나 띄어쓰기가 있다면 따옴표로 묶어줘야 함)
-docker run -d -p 9999:80 -v /home/ubuntu/2021_DEV_HTML:/usr/local/apache2htdocs --name apacheweb2 httpd
+docker run -d -p 9999:80 -v /home/ubuntu/2021_DEV_HTML:/usr/local/apache2/htdocs --name apacheweb2 httpd
 ```
 
 > 현업 팁 : docker 명령을 직접 내릴 때는 명령이 매우 길기 때문에, 보통 메모장 등에 명령셋들을 저장한 후, 복사 / 붙여넣기로 하나씩 실행하는 경우가 많다고 함.
@@ -588,6 +588,16 @@ docker rm $(docker ps -a -q)
 docker rmi $(docker images -q)
 ```
 
+- for 복붙
+
+```shell
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker rmi -f $(docker images -q)
+```
+
+
+
 - 별도로 다음과 같은 명령도 사용 가능 (많이 안쓰임)
 
 ```shell
@@ -660,7 +670,52 @@ docker build --tag test ./
 
 ```shell
 cp Dockerfile test_dockerfile
-docker build --tag test2 -f test_dockerfile .
+docker build --tag test2_image -f test_dockerfile .
 docker images
 ```
+
+
+
+### LABEL
+
+- <key>=<value> 형식으로 메타 데이터를 넣을 수 있는 기능
+- 보통 아래와 같은 정보를 넣음
+  - 저자
+  - 버전
+  - 설명
+  - 작성일자
+
+
+
+### CMD
+
+- 다음 예에서 echo 명령만 달랑 써줄 경우, shell에서 실행하지 않고, 직접 해당 명령이 실행됨 
+- shell에서 실행할 때, shell의 환경 변수등이 적용이 되지 않음
+- 따라서, 정확하게는 명확히 shell까지 지정해서 명령을 실행해 주는 것이 좋다.
+- `/bin/sh -c` 명령은 `/bin` 디렉토리에 있는 `sh` 프로그램 (기본 shell 프로그램)을 실행하되,
+  - `-c` 옵션은 shell 명령을 터미널 상에서 받지 않고, 인자로 받겠다라는 의미임
+  - 따라서, `/bin/sh -c echo`라고 하면, `echo`라는 명령을 `sh` 프로그램 상에서 실행하겠다라는 의미
+
+- 쌍따옴표로 써야 함 (홀따옴표를 쓰면 안 됨)
+
+
+
+- CMD 명령을 적는 3가지 형태
+
+```dockerfile
+# 1. 리스트에
+CMD ["executable", "param1", "param2", ...]
+
+CMD ["/bin/sh", "-c", "echo", "Hello"]
+
+# 2. ENTRYPOINT 명령어에 인자를 리스트처럼 작성
+CMD ["param1", "param2", ...]
+
+# 3. shell 명령처럼 작성하는 형태
+CMD <command> <param1> <param2> ...
+```
+
+>CMD는 하나의 Dockerfile에서 한 가지만 설정되며, 만약 CMD 설정이 여러 개일 경우, 맨 마지막에 설정된 CMD 설정만 적용됨.
+
+
 
