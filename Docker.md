@@ -614,20 +614,26 @@ docker system prune  # 정지된 컨테이너, 실행 중인 컨테이너 이미
 
 - 개념
   - docker 이미지를 작성할 수 있는 기능
-  - Dockerfile 문법으로 이미지 생성을 위한 스크립트를 작성할 수 있고, 이를 기반으로 이미지를 생성
+  - Dockerfile 문법으로 이미지 생성을 위한 **스크립트**를 작성할 수 있고, 이를 기반으로 이미지를 생성
   - 배포를 위해서도 활용
 - 기본 문법
   - `명령 + 인자`로 이루어짐
-  - 명령임을 구별하기 위해 일반적으로 대문자로 작성
+  - 명령은 통상적으로 대문자로 작성
   - 주석 사용 가능
 
 ## Dockerfile 주요 명령
 
-| 명령 | 설명                    |
-| ---- | ----------------------- |
-| FROM | 베이스 이미지 지정 명령 |
-|      |                         |
-|      |                         |
+| 명령       | 설명                                                         |
+| ---------- | ------------------------------------------------------------ |
+| FROM       | 베이스 이미지 지정 명령                                      |
+| LABEL      | 버전 정보, 작성자 따위의 이미지 설명을 작성하기 위한 명령    |
+| CMD        | docker 컨테이너가 시작할 때, 실행하는 쉘 명령을 지정하는 명령.<br />`RUN`과 비슷하지만, `RUN`은 이미지 작성 시 실행하는 명령.<br />`CMD`는 컨테이너를 시작할 때 실행하는 명령 |
+| RUN        | shell 명령을 실행하는 명령 (예 : `RUN ["apt-get", 'install', 'nginx']`)<br />`RUN`은 이미지 작성시 실행되며, 새로운 이미지 layer를 만드는 역할을 함 |
+| ENTRYPOINT | docker 컨테이너가 시작할 때, 실행하는 shell 명령을 지정하는 명령.<br />docker run 커맨드 실행시, 별도 명령어도 넣을 수 있는데, 이 때 `CMD` 명령은 해당 명령으로 덮어씌워짐<br />`ENTRYPOINT`로 지정한 명령은 docker run 커멘드 실행시 함께 넣어진 별도 명령어가 있더라도, 덮어씌워지지 않고 실행됨 |
+| EXPOSE     | docker 컨테이너 외부에 오픈할 포트 설정 (예 : `EXPOSE 8080`) |
+| ENV        | docker 컨테이너 내부에서 사용할 **환경변수** 지정 (예 : `ENV PATH /usr/bin:$PATH`) |
+| WORKDIR    | docker 컨테이너에서의 작업 디렉토리 설정                     |
+| COPY       | 파일 또는 디렉토리를 docker 컨테이너에 복사.<br />ADD와 달리 URL은 지정할 수 없으며, 압축 파일을 자동으로 풀어주지 않음 (예 : `COPY test.sh /root/test.sh`) |
 
 
 
@@ -638,12 +644,14 @@ docker system prune  # 정지된 컨테이너, 실행 중인 컨테이너 이미
 
 ```dockerfile
 # Dockerfile 파일명으로 다음과 같이 작성
+
+# 경령화된 linux 시스
 FROM alpine
 ```
 
 
 
-### Dockerfile로 이미지를 작성
+### Dockerfile로 이미지를 작성 - build
 
 ```
 docker build [옵션] [Dockerfile 경로]
@@ -653,9 +661,9 @@ docker build [옵션] [Dockerfile 경로]
 
 | 옵션              | 설명                                                         |
 | ----------------- | ------------------------------------------------------------ |
-| `-t` 또는 `--tag` | 이미지 이름 설정.<br />이미지 이름은 `저장소(DockerHub ID)/이미지이름:태그`와 같이 작성할 수 있음<br />저장소 이름 및 태그 이름은 작성안해도 되며, 태그 이름이 없을 경우, 디폴트로 `latest`가 태그로 붙여짐 |
+| `-t` 또는 `--tag` | 이미지 이름 설정.<br />이미지 이름은 `저장소(DockerHub ID)/이미지이름:태그`와 같이 작성할 수 있음<br />저장소 이름 및 태그 이름은 작성하지 않아도 되며, 태그 이름이 없을 경우, 디폴트로 `latest`가 태그로 붙여짐 |
 | `-f`              | 이미지 빌드시 디폴트로 `Dockerfile`파일명으로 된 파일을 찾아서, 이미지를 빌드함. <br />**그 외의 파일명으로 이미지를 빌드**할 경우 해당 옵션을 사용해서 **파일명을 지정**할 수 있음 |
-| `--pull`          | FROM으로 지정된 이미지는 한번 다운로드 받으면, 이미지 생성시마다 새로 다운로드 받지 않고, 다운로드 받은 이미지를 사용함.<br />해당 옵션은 이미지 생성시마다 새로 다운로드를 받으라는 옵션.<br />`--pull=true`와 같이 작성하여, 사용함.<br />Dockerhub에 베이스 이미지를 수시로 업데이트하고, 이를 기반으로 새로운 이미지 생성시 자주 사용할 수 있는 옵션 |
+| `--pull`          | FROM으로 지정된 이미지는 한번 다운로드 받으면, 이미지 생성시마다 새로 다운로드 받지 않고, 다운로드 받은 이미지를 사용함.<br />해당 옵션은 이미지 생성시마다 **새로 다운로드를 받으라**는 옵션.<br />`--pull=true`와 같이 작성하여, 사용함.<br />Dockerhub에 베이스 이미지를 수시로 업데이트하고, 이를 기반으로 새로운 이미지 생성시 자주 사용할 수 있는 옵션 |
 
 - 테스트
   - 위에서 작성한 dockerfile이 있는 동일 경로에서 다음과 같이 명령
@@ -678,12 +686,30 @@ docker images
 
 ### LABEL
 
-- <key>=<value> 형식으로 메타 데이터를 넣을 수 있는 기능
+- `<key>=<value>` 형식으로 메타 데이터를 넣을 수 있는 기능
 - 보통 아래와 같은 정보를 넣음
   - 저자
   - 버전
   - 설명
   - 작성일자
+
+
+
+### COPY
+
+- Dockerfile 생성
+  - 하부 폴더 2021_DEV 폴더에 이미지에 추가할 파일들을 넣어 놓은 상태에서 다음과 같이 Dockerfile 작성
+
+```dockerfile
+FROM httpd:alpine
+
+LABEL maintainer="alphatechnicist@gmail.com"
+LABEL version="1.0.0"
+LABEL description="A test docker image to understand Docker"
+
+# Dockerfile이 있는 그 위치 기준 상대경로
+COPY ./2021_DEV /usr/local/apache2/htdocs
+```
 
 
 
@@ -715,7 +741,171 @@ CMD ["param1", "param2", ...]
 CMD <command> <param1> <param2> ...
 ```
 
->CMD는 하나의 Dockerfile에서 한 가지만 설정되며, 만약 CMD 설정이 여러 개일 경우, 맨 마지막에 설정된 CMD 설정만 적용됨.
+>`CMD`는 하나의 Dockerfile에서 한 가지만 설정되며, 만약 `CMD` 설정이 여러 개일 경우, 맨 마지막에 설정된 `CMD` 설정만 적용됨.
+
+
+
+- 가끔 사용하는 docker 명령1 : `logs`
+  - 컨테이너 에러 또는 출력 결과 확인
+
+```shell
+docker logs [컨테이더ID 또는 이름]
+
+# 예
+docker logs httpdweb1
+```
+
+- 가끔 사용하는 docker 명령2 : `stop`, `kill`
+  - 컨테이너 중지하기
+  - `docker stop` : 현재 실행중인 단계까지는 기다린 후에 중지
+  - `docker kill` : 즉시 컨테이너를 중지시킴
+
+
+
+- base 이미지의 CMD를 덮어버리기
+
+```dockerfile
+FROM httpd:alpine
+
+LABEL maintainer="alphatechnicist@gmail.com"
+LABEL version="1.0.0"
+LABEL description="A test docker image to understand Docker"
+
+# Dockerfile이 있는 그 위치 기준 상대경로
+COPY ./2021_DEV /usr/local/apache2/htdocs
+
+CMD ["/bin/sh"]
+```
+
+```shell
+# 이미지 생성
+docker build --tag myimage .
+
+# -dit 옵션으로 터미널 붙이고, 포트 오픈하고, 백그라운드 실행, 컨테이너 중지시 삭제
+docker run -dit -p 9999:80 --name myweb2 --rm myimage
+```
+
+- 위와 같이 실행한 후, localhost:9999 접속시, 접속 실패
+
+
+
+- Dockerfile의 CMD 명령을 shell 명령에서 덮어버리기
+
+```shell
+docker run -dit -p 9999:80 --name myweb2 --rm myimage /bin/sh -c httpd-foreground
+```
+
+
+
+### ENTRYPOINT
+
+- `ENTRYPOINT`는 docker run 시에 함께 넣어지는 `CMD` 명령에 덮어씌워지지 않고, 반드시 실행해야 하는 명령을 기입할 때 사용
+- 이 때, docker run 시 함께 넣어지는 명령은 `ENTRYPOINT`에 작성된 명령의 인자로 넣어지게 됨
+- 따라서, `ENTRYPOINT`에 컨테이너 실행시 반드시 실행되어야 하는 명령을 넣고
+  - 별도로 각 컨테이너 생성시 필요한 인자를 `CMD`에 넣는 식으로 활용하기도 함 
+
+```dockerfile
+FROM httpd:alpine
+
+LABEL maintainer="alphatechnicist@gmail.com"
+LABEL version="1.0.0"
+LABEL description="A test docker image to understand Docker"
+
+# Dockerfile이 있는 그 위치 기준 상대경로
+COPY ./2021_DEV /usr/local/apache2/htdocs
+
+ENTRYPOINT ["/bin/sh"]
+```
+
+```shell
+# 이미지 생성
+docker build --tag myimage .
+
+# -dit 옵션으로 터미널 붙이고, 포트 오픈하고, 백그라운드 실행, 컨테이너 중지시 삭제
+docker run -dit -p 9999:80 --name myweb2 --rm myimage
+```
+
+
+
+### RUN
+
+- docker 는 이미지 생성시, 각 단계를 **layer**로 나누어 작성함
+  - 이를 통해 특정 단계 변경시, 전체 이미지를 다시 다운로드 받지 않아도 됨
+- RUN 명령은 이미지 생성시, 일종의 layer를 만들 수 있는 명령으로, 보통 베이스 이미지에 패키지(프로그램)을 설치하여, 새로운 이미지를 만들 때 많이 사용
+
+```dockerfile
+...
+
+# 한국 시간으로 설정
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Seoul
+RUN apt-get install -y tzdata
+
+RUN git clone -b be --single-branch https://github.com/POPPY-MAIL/dev.git
+
+...
+
+```
+
+
+
+- test
+
+```dockerfile
+FROM ubuntu:18.04
+
+LABEL maintainer="alphatechnicist@gmail.com"
+LABEL version="1.0.0"
+LABEL description="A test docker image"
+
+RUN apt-get update
+# apache2와 함께 apt-utils(설치관련 유틸리티를 가진 프로그램)도 설치
+RUN apt-get install -y apache2 apt-utils
+
+COPY ./2021_DEV_HTML /var/www/html/
+
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+```
+
+```shell
+docker run -dit -p 9999:80 --name httpdweb5 --rm myweb4
+```
+
+
+
+### EXPOSE
+
+- docker 컨테이너의 특정 포트를 외부에 오픈하는 설정
+- docker run -p 옵션으로 설정할 수도 있음
+  - docker run -p 옵션은 컨테이너의 특정 포트를 외부에 오픈하고, 해당 포트를 호스트 PC의 특정 포트와 매핑시킴
+  - 이에 반해, `EXPOSE`는 컨테이너 생성시, 특정 포트를 외부에 오픈하는 것만 설정하는 것.
+  - 따라서, 독립적으로 실행시는 `EXPOSE` 옵션을 넣는다고 해서, 호스트 PC에서 해당 컨테이너에 포트번호로 접속할 수 있는 것은 아님
+
+### ENV
+
+- 컨테이너 내의 환경 변수 설정
+- 설정한 환경 변수는 RUN, CMD, ENTRYPOINT 명령에도 적용됨
+
+```dockerfile
+# 한국 시간으로 설정
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Seoul
+RUN apt-get install -y tzdata
+```
+
+
+
+### WORKDIR
+
+- `RUN`, `CMD`, `ENTRYPOINT` 명령이 실행될 디렉토리
+
+```dockerfile
+WORKDIR /home/dev/BACKEND/
+
+RUN pip install -r requirements.txt
+```
+
+
 
 
 
