@@ -981,7 +981,7 @@ docker run --rm -d -p 8888:8888 -v /home/ubuntu/2021_LEARN:/home/jovyan/work jup
 
 ## 컨테이너와 컨테이너 연결
 
-- docker run 옵션으로 `--`link` 옵션을 사용하여 연결
+- docker run 옵션으로 `--link` 옵션을 사용하여 연결
 - `--link [본래 컨테이너 이름]:[컨테이너를 가리킬 이름]`
 
 ```dockerfile
